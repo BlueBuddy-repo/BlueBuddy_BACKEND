@@ -1,13 +1,17 @@
 package com.soohwang.bluebuddy.controller;
 
+import com.soohwang.bluebuddy.dto.LoginDto;
 import com.soohwang.bluebuddy.dto.SignupDto;
 import com.soohwang.bluebuddy.exception.ApiResponse;
+import com.soohwang.bluebuddy.jwt.JwtUtil;
 import com.soohwang.bluebuddy.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,6 +43,24 @@ public class UserController {
             return ResponseEntity.ok(new ApiResponse(true, "회원가입 성공", null));
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(false, ex.getMessage(), null));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse> login(@RequestBody LoginDto loginDto) {
+        try {
+            String token = userService.login(loginDto);
+            return ResponseEntity.ok(new ApiResponse(true, "로그인 성공", token));
+        } catch (UsernameNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(false, ex.getMessage(), null));
+        } catch (BadCredentialsException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ApiResponse(false, ex.getMessage(), null));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
