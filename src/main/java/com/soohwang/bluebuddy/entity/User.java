@@ -30,6 +30,7 @@ public class User implements UserDetails {
     @NotNull
     private String password;
 
+    @NotNull
     private Long waveIndex = 0L;
 
     @Override
