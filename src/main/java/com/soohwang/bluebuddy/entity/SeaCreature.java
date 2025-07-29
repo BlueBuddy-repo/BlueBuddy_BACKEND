@@ -20,19 +20,19 @@ public class SeaCreature {
     @Column(name = "name_en", length = 100)
     private String nameEn;
 
-    @Column(name = "scientific_name", length = 255)
+    @Column(name = "scientific_name")
     private String scientificName;
 
     @Column(name = "length")
     private Long password;
 
-    @Column(name = "habitat", length = 255)
+    @Column(name = "habitat")
     private String habitat;
 
     @Column(name = "endangerment_level")
     private Long endangermentLevel;
 
-    @Column(name = "description", length = 255)
+    @Column(name = "description")
     private String description;
 
 //    @OneToMany(mappedBy = "seaCreature", cascade = CascadeType.REMOVE)
