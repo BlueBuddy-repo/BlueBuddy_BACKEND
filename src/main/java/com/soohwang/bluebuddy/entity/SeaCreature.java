@@ -1,6 +1,7 @@
 package com.soohwang.bluebuddy.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import java.util.List;
 
@@ -11,28 +12,27 @@ public class SeaCreature {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "creature_id")
     private Long creatureId;
 
-    @Column(name = "name_kr", length = 100)
+    @NotNull
     private String nameKr;
 
-    @Column(name = "name_en", length = 100)
+    @NotNull
     private String nameEn;
 
-    @Column(name = "scientific_name")
+    @NotNull
     private String scientificName;
 
-    @Column(name = "length")
+    @NotNull
     private Long password;
 
-    @Column(name = "habitat")
+    @NotNull
     private String habitat;
 
-    @Column(name = "endangerment_level")
+    @NotNull
     private Long endangermentLevel;
 
-    @Column(name = "description")
+    @NotNull
     private String description;
 
 //    @OneToMany(mappedBy = "seaCreature", cascade = CascadeType.REMOVE)
