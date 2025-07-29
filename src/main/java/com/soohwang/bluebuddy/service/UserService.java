@@ -29,6 +29,7 @@ public class UserService {
                 .email(signupDto.getEmail())
                 .name(signupDto.getName())
                 .password(passwordEncoder.encode(signupDto.getPassword()))
+                .waveIndex(0L)
                 .build();
 
         userRepository.save(user);
