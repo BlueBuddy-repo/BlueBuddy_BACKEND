@@ -2,6 +2,7 @@ package com.soohwang.bluebuddy.service;
 
 import com.soohwang.bluebuddy.dto.LoginDto;
 import com.soohwang.bluebuddy.dto.SignupDto;
+import com.soohwang.bluebuddy.dto.UpdateUserDto;
 import com.soohwang.bluebuddy.entity.User;
 import com.soohwang.bluebuddy.jwt.JwtUtil;
 import com.soohwang.bluebuddy.repository.UserRepository;
@@ -43,5 +44,17 @@ public class UserService {
             throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
         }
         return jwtUtil.createToken(user.getEmail());
+    }
+
+    @Transactional
+    public void updateMyInfo(UpdateUserDto updateUserDto, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+
+        if (!passwordEncoder.matches(updateUserDto.getPassword(), user.getPassword())) {
+            throw new BadCredentialsException("비밀번호가 틀렸습니다.");
+        }
+        user.setName(updateUserDto.getName());
+        user.setPassword(passwordEncoder.encode(updateUserDto.getNewPassword()));
     }
 }
