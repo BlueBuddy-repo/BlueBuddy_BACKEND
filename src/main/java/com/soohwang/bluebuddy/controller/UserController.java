@@ -44,6 +44,9 @@ public class UserController {
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse(false, ex.getMessage(), null));
+        } catch (IllegalStateException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(false, ex.getMessage(), null));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
@@ -84,4 +87,6 @@ public class UserController {
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
     }
+
+
 }

@@ -1,5 +1,6 @@
 package com.soohwang.bluebuddy.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import jakarta.validation.constraints.NotNull;
@@ -32,6 +33,10 @@ public class User implements UserDetails {
 
     @NotNull
     private Long waveIndex = 0L;
+
+    @OneToOne(mappedBy = "user")
+    @JsonIgnore
+    private Pet pet;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

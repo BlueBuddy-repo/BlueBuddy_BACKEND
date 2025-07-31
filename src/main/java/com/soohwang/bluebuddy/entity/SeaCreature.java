@@ -24,9 +24,6 @@ public class SeaCreature {
     private String scientificName;
 
     @NotNull
-    private Long password;
-
-    @NotNull
     private String habitat;
 
     @NotNull
