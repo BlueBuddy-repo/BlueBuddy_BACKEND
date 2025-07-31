@@ -5,10 +5,8 @@ import com.soohwang.bluebuddy.dto.SignupDto;
 import com.soohwang.bluebuddy.dto.UpdateUserDto;
 import com.soohwang.bluebuddy.entity.User;
 import com.soohwang.bluebuddy.exception.ApiResponse;
-import com.soohwang.bluebuddy.jwt.JwtUtil;
 import com.soohwang.bluebuddy.service.UserService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -69,6 +67,15 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
+    }
+
+    @GetMapping("/user/my")
+    public ResponseEntity<ApiResponse> getMyInfo(@AuthenticationPrincipal User user) {
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(false, "사용자 없음", null));
+        }
+        return ResponseEntity.ok(new ApiResponse(true, "나의 정보 불러오기 성공", user.getName()));
     }
 
     @PutMapping("/user/update")
