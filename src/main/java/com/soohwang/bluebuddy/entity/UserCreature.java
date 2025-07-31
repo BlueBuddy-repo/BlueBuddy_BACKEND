@@ -26,5 +26,10 @@ public class UserCreature {
 
     public UserCreature() {
     }
+
+    public UserCreature(User user, SeaCreature seaCreature) {
+        this.user = user;
+        this.seaCreature = seaCreature;
+    }
 }
 
