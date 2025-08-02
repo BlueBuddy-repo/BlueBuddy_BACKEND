@@ -28,4 +28,15 @@ public class PetService {
                 .creatureId(pet.getSeaCreature().getCreatureId())
                 .build();
     }
+
+    //펫 변경
+    public void changeMyPet(User user, ChangePetDto changePetDto) {
+        Pet pet = petRepository.getPetByUser(user)
+                .orElseThrow(()-> new IllegalStateException("펫이 없습니다."));
+        SeaCreature seaCreature = seaCreatureRepository.findByCreatureId(changePetDto.getSeaCreatureId());
+        pet.setPetName(changePetDto.getPetName());
+        pet.setSeaCreature(seaCreature);
+        petRepository.save(pet);
+    }
+
 }
