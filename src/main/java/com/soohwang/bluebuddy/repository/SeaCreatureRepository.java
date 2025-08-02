@@ -12,4 +12,5 @@ public interface SeaCreatureRepository extends JpaRepository<SeaCreature, String
     @Query(value = "SELECT * FROM sea_creature ORDER BY RAND() LIMIT 1", nativeQuery = true)
     SeaCreature findRandomOne();
 
+    SeaCreature findByCreatureId(Long seaCreatureId);
 }
