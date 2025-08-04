@@ -13,8 +13,8 @@ public class PostcardImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postcardImageId;
 
-//    @Column(nullable = false)
-//    private String imagePath;
+    @Column(nullable = false)
+    private String imagePath;
 
     @OneToMany(mappedBy = "postcardImage", cascade = CascadeType.REMOVE)
     private List<UserPostcard> userPostcards;

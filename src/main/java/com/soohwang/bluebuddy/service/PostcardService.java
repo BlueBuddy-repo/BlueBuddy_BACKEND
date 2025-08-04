@@ -1,12 +1,11 @@
 package com.soohwang.bluebuddy.service;
 
-import com.soohwang.bluebuddy.entity.PostcardImage;
-import com.soohwang.bluebuddy.entity.PostcardText;
-import com.soohwang.bluebuddy.entity.User;
-import com.soohwang.bluebuddy.entity.UserPostcard;
+import com.soohwang.bluebuddy.dto.UserPostcardDto;
+import com.soohwang.bluebuddy.entity.*;
 import com.soohwang.bluebuddy.repository.PostcardImageRepository;
 import com.soohwang.bluebuddy.repository.PostcardTextRepository;
 import com.soohwang.bluebuddy.repository.UserPostcardRepository;
+import com.soohwang.bluebuddy.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +17,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class PostcardService {
 
+    private final UserRepository userRepository;
     private final PostcardImageRepository postcardImageRepository;
     private final PostcardTextRepository postcardTextRepository;
     private final UserPostcardRepository userPostcardRepository;
@@ -42,5 +42,24 @@ public class PostcardService {
         up.setPostcardText(text);
 
         userPostcardRepository.save(up);
+    }
+
+    @Transactional
+    public List<UserPostcardDto> getPostcardsByUserEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("사용자 없음"));
+
+        List<UserPostcard> creatures = userPostcardRepository.findPostcardsByUser(user);
+
+        return creatures.stream()
+                .map(this::toResponse)
+                .toList();
+    }
+    private UserPostcardDto toResponse(UserPostcard up) {
+        return UserPostcardDto.builder()
+                .userPostcardId(up.getUserPostcardId())
+                .postcardImagePath(up.getPostcardImage().getImagePath())
+                .postcardText(up.getPostcardText().getPostcardText())
+                .build();
     }
 }
