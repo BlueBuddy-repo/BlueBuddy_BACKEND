@@ -5,6 +5,7 @@ import com.soohwang.bluebuddy.dto.SignupDto;
 import com.soohwang.bluebuddy.dto.UpdateUserDto;
 import com.soohwang.bluebuddy.entity.User;
 import com.soohwang.bluebuddy.exception.ApiResponse;
+import com.soohwang.bluebuddy.service.EmailAuthService;
 import com.soohwang.bluebuddy.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final EmailAuthService emailAuthService;
 
     // 회원가입
     @PostMapping("/auth/signup")
@@ -36,6 +38,10 @@ public class UserController {
                         .orElse("유효성 검사 실패");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(new ApiResponse(false, errorMessage, null));
+            }
+            if (!emailAuthService.isEmailVerified(requestDto.getEmail())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse(false, "이메일 인증이 완료되지 않았습니다.", null));
             }
             userService.signup(requestDto);
             return ResponseEntity.ok(new ApiResponse(true, "회원가입 성공", null));
