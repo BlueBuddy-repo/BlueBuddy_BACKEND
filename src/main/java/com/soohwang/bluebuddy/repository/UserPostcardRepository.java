@@ -11,7 +11,6 @@ import java.util.List;
 
 @Repository
 public interface UserPostcardRepository extends JpaRepository<UserPostcard, Long> {
-    List<UserPostcard> findByUser(User user);
 
     @Query("SELECT up FROM UserPostcard up WHERE up.user = :user")
     List<UserPostcard> findPostcardsByUser(@Param("user") User user);
