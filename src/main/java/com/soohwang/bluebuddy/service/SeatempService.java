@@ -71,7 +71,6 @@ public class SeatempService {
             }
 
             repository.saveAll(dataList);
-            System.out.println("CSV 저장 완료 : " + dataList.size() + "건 저장됨 ∼！");
         } catch (Exception e) {
             System.err.println("CSV 파싱 실패 : " + e.getMessage());
         }
