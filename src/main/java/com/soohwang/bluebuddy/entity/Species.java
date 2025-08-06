@@ -18,21 +18,21 @@ public class Species {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "lat_min")
+    @Column
     private int latMin;
 
-    @Column(name = "lat_max")
+    @Column
     private int latMax;
 
-    @Column(name = "lon_min")
+    @Column
     private int lonMin;
 
-    @Column(name = "lon_max")
+    @Column
     private int lonMax;
 
-    @Column(name = "species_count")
+    @Column
     private int speciesCount;
 
-    @Column(name = "updated_at")
+    @Column
     private LocalDateTime updatedAt;
 }
