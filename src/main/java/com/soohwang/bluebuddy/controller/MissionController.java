@@ -1,5 +1,6 @@
 package com.soohwang.bluebuddy.controller;
 
+import com.soohwang.bluebuddy.dto.NewCreatureDto;
 import com.soohwang.bluebuddy.entity.User;
 import com.soohwang.bluebuddy.exception.ApiResponse;
 import com.soohwang.bluebuddy.service.MissionService;
@@ -28,10 +29,11 @@ public class MissionController {
             }
 
             String email = user.getEmail();
+            NewCreatureDto creature = missionService.completeMission(email, habitat);
 
             missionService.completeMission(email, habitat);
 
-                return ResponseEntity.ok(new ApiResponse(true, "생물 획득 완료", null));
+                return ResponseEntity.ok(new ApiResponse(true, "생물 획득 완료", creature));
             } catch (RuntimeException ex) {
                 if (ex.getMessage() != null && ex.getMessage().contains("사용자 없음")) {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
