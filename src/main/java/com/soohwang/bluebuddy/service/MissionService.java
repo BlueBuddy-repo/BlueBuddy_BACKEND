@@ -19,7 +19,7 @@ public class MissionService {
         List<SeaCreature> allCreatures = seaCreatureRepository.findByHabitat(habitat);
         if (allCreatures.isEmpty())  {
             throw new RuntimeException("해당 서식지에 생물이 없습니다.");
-        };
+        }
 
         SeaCreature selected = userCreatureService.getRandomCreature(allCreatures);
         userCreatureService.addCreatureToUser(email, selected);
