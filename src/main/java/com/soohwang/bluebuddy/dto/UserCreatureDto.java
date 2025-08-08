@@ -14,4 +14,5 @@ public class UserCreatureDto {
     private String habitat;
     private Long endangermentLevel;
     private String description;
+    private Long displayOrder;
 }
