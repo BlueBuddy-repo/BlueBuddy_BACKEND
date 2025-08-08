@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface SeaCreatureRepository extends JpaRepository<SeaCreature, String> {
+public interface SeaCreatureRepository extends JpaRepository<SeaCreature, Long> {
     List<SeaCreature> findByHabitat(String habitat);
 
     @Query(value = "SELECT * FROM sea_creature ORDER BY RAND() LIMIT 1", nativeQuery = true)

@@ -1,9 +1,11 @@
 package com.soohwang.bluebuddy.service;
 
-import com.soohwang.bluebuddy.dto.UserCreatureDto;
+import com.soohwang.bluebuddy.dto.CreatureDetailDto;
+import com.soohwang.bluebuddy.dto.CreatureThumbnailDto;
 import com.soohwang.bluebuddy.entity.SeaCreature;
 import com.soohwang.bluebuddy.entity.User;
 import com.soohwang.bluebuddy.entity.UserCreature;
+import com.soohwang.bluebuddy.repository.SeaCreatureRepository;
 import com.soohwang.bluebuddy.repository.UserCreatureRepository;
 import com.soohwang.bluebuddy.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -18,6 +20,7 @@ public class UserCreatureService {
 
     private final UserRepository userRepository;
     private final UserCreatureRepository userCreatureRepository;
+    private final SeaCreatureRepository seaCreatureRepository;
 
     @Transactional
     public void addCreatureToUser(String email, SeaCreature creature) {
@@ -34,25 +37,38 @@ public class UserCreatureService {
     }
 
     @Transactional
-    public List<UserCreatureDto> getCreaturesByUserEmail(String email) {
+    public List<CreatureThumbnailDto> getCreatureThumbnails(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("사용자 없음"));
 
         List<SeaCreature> creatures = userCreatureRepository.findSeaCreaturesByUser(user);
 
         return creatures.stream()
-                .map(this::toResponse)
+                .map(sc -> CreatureThumbnailDto.builder()
+                        .creatureId(sc.getCreatureId())
+                        .displayOrder(sc.getDisplayOrder())
+                        .imageUrl(sc.getImageUrl())
+                        .build())
                 .toList();
     }
-    private UserCreatureDto toResponse(SeaCreature sc) {
-        return UserCreatureDto.builder()
+
+    @Transactional
+    public CreatureDetailDto getCreatureDetail(Long creatureId) {
+        SeaCreature sc = seaCreatureRepository.findById(creatureId)
+                .orElseThrow(() -> new RuntimeException("해당 생물 없음"));
+
+        return toResponse(sc);
+    }
+
+    private CreatureDetailDto toResponse(SeaCreature sc) {
+        return CreatureDetailDto.builder()
                 .creatureId(sc.getCreatureId())
                 .nameKr(sc.getNameKr())
                 .nameEn(sc.getNameEn())
                 .scientificName(sc.getScientificName())
-                .habitat(sc.getHabitat())
                 .endangermentLevel(sc.getEndangermentLevel())
                 .description(sc.getDescription())
+                .imageUrl(sc.getImageUrl())
                 .build();
     }
 

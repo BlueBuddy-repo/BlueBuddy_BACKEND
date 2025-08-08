@@ -7,6 +7,6 @@ import lombok.Getter;
 @Builder
 public class UserPostcardDto {
     private Long userPostcardId;
-    private String postcardImagePath;
+    private String imagePath;
     private String postcardText;
 }
