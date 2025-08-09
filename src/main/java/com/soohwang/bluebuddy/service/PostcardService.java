@@ -58,7 +58,7 @@ public class PostcardService {
     private UserPostcardDto toResponse(UserPostcard up) {
         return UserPostcardDto.builder()
                 .userPostcardId(up.getUserPostcardId())
-                .postcardImagePath(up.getPostcardImage().getImagePath())
+                .imagePath(up.getPostcardImage().getImagePath())
                 .postcardText(up.getPostcardText().getPostcardText())
                 .build();
     }
