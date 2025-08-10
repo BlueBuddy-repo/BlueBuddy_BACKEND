@@ -4,7 +4,9 @@ import com.soohwang.bluebuddy.dto.CreatureDetailDto;
 import com.soohwang.bluebuddy.dto.CreatureThumbnailDto;
 import com.soohwang.bluebuddy.entity.SeaCreature;
 import com.soohwang.bluebuddy.entity.User;
+import com.soohwang.bluebuddy.entity.Pet;
 import com.soohwang.bluebuddy.entity.UserCreature;
+import com.soohwang.bluebuddy.repository.PetRepository;
 import com.soohwang.bluebuddy.repository.SeaCreatureRepository;
 import com.soohwang.bluebuddy.repository.UserCreatureRepository;
 import com.soohwang.bluebuddy.repository.UserRepository;
@@ -21,7 +23,7 @@ public class UserCreatureService {
     private final UserRepository userRepository;
     private final UserCreatureRepository userCreatureRepository;
     private final SeaCreatureRepository seaCreatureRepository;
-
+    private final PetRepository petRepository;
     @Transactional
     public void addCreatureToUser(String email, SeaCreature creature) {
         User user = userRepository.findByEmail(email)
@@ -53,14 +55,21 @@ public class UserCreatureService {
     }
 
     @Transactional
-    public CreatureDetailDto getCreatureDetail(Long creatureId) {
+    public CreatureDetailDto getCreatureDetail(Long userId, Long creatureId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("사용자 없음"));
+
         SeaCreature sc = seaCreatureRepository.findById(creatureId)
                 .orElseThrow(() -> new RuntimeException("해당 생물 없음"));
 
-        return toResponse(sc);
+        String petName = petRepository.findByUserAndSeaCreature(user, sc)
+                .map(Pet::getPetName)
+                .orElse(null);
+
+        return toResponse(sc, petName);
     }
 
-    private CreatureDetailDto toResponse(SeaCreature sc) {
+    private CreatureDetailDto toResponse(SeaCreature sc, String petName) {
         return CreatureDetailDto.builder()
                 .creatureId(sc.getCreatureId())
                 .nameKr(sc.getNameKr())
@@ -69,6 +78,7 @@ public class UserCreatureService {
                 .endangermentLevel(sc.getEndangermentLevel())
                 .description(sc.getDescription())
                 .imageUrl(sc.getImageUrl())
+                .petName(petName)
                 .build();
     }
 
