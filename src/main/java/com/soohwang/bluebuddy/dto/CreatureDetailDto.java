@@ -11,6 +11,7 @@ public class CreatureDetailDto {
     private Long creatureId;
     private String nameKr;
     private String nameEn;
+    private String petName;
     private String scientificName;
     private Long endangermentLevel;
     private String description;

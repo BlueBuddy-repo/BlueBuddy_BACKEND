@@ -53,14 +53,18 @@ public class UserCreatureService {
     }
 
     @Transactional
-    public CreatureDetailDto getCreatureDetail(Long creatureId) {
+    public CreatureDetailDto getCreatureDetail(User user, Long creatureId) {
         SeaCreature sc = seaCreatureRepository.findById(creatureId)
                 .orElseThrow(() -> new RuntimeException("해당 생물 없음"));
 
-        return toResponse(sc);
+        String petName = userCreatureRepository.findByUserAndSeaCreature(user, sc)
+                .map(UserCreature::getPetName)
+                .orElse(null);
+
+        return toResponse(sc, petName);
     }
 
-    private CreatureDetailDto toResponse(SeaCreature sc) {
+    private CreatureDetailDto toResponse(SeaCreature sc, String petName) {
         return CreatureDetailDto.builder()
                 .creatureId(sc.getCreatureId())
                 .nameKr(sc.getNameKr())
@@ -69,6 +73,7 @@ public class UserCreatureService {
                 .endangermentLevel(sc.getEndangermentLevel())
                 .description(sc.getDescription())
                 .imageUrl(sc.getImageUrl())
+                .petName(petName)
                 .build();
     }
 
