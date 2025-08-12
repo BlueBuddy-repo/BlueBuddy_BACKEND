@@ -57,7 +57,7 @@ public class UserCreatureController {
                         .body(new ApiResponse(false, "인증되지 않은 사용자입니다.", null));
             }
 
-            CreatureDetailDto result = userCreatureService.getCreatureDetail(creatureId);
+            CreatureDetailDto result = userCreatureService.getCreatureDetail(user, creatureId);
 
             return ResponseEntity.ok(new ApiResponse(true, "생물 상세 조회 성공", result));
         } catch (RuntimeException ex) {
