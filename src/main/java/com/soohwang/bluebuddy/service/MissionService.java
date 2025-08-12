@@ -1,12 +1,12 @@
 package com.soohwang.bluebuddy.service;
 
+import com.soohwang.bluebuddy.dto.NewCreatureDto;
 import com.soohwang.bluebuddy.entity.SeaCreature;
 import com.soohwang.bluebuddy.repository.SeaCreatureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -15,17 +15,15 @@ public class MissionService {
     private final SeaCreatureRepository seaCreatureRepository;
     private final UserCreatureService userCreatureService;
 
-    public void completeMission(String email, String habitat) {
+    public NewCreatureDto completeMission(String email, String habitat) {
         List<SeaCreature> allCreatures = seaCreatureRepository.findByHabitat(habitat);
-        if (allCreatures.isEmpty()) return;
+        if (allCreatures.isEmpty())  {
+            throw new RuntimeException("해당 서식지에 생물이 없습니다.");
+        }
 
-        SeaCreature selected = getRandomCreature(allCreatures);
+        SeaCreature selected = userCreatureService.getRandomCreature(allCreatures);
         userCreatureService.addCreatureToUser(email, selected);
-    }
 
-    private SeaCreature getRandomCreature(List<SeaCreature> creatures) {
-        Random random = new Random();
-        int index = random.nextInt(creatures.size());
-        return creatures.get(index);
+        return NewCreatureDto.fromEntity(selected);
     }
 }

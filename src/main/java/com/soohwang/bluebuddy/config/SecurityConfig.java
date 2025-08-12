@@ -26,7 +26,7 @@ public class SecurityConfig {
     // 인증인가 없이 접근 가능한 엔드포인트 리스트
     private static final String[] AUTH_WHITELIST = {
             "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/v3/api-docs.yaml", "/v3/api-docs", "/webjars/**",
-            "/auth/**","/mission/complete"
+            "/auth/**", "/mission/complete" ,"/api/**", "/img/**"
     };
 
     @Bean

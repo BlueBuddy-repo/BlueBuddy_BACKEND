@@ -32,6 +32,12 @@ public class SeaCreature {
     @NotNull
     private String description;
 
+    @NotNull
+    private Long displayOrder;
+
+    @NotNull
+    private String imageUrl;
+
 //    @OneToMany(mappedBy = "seaCreature", cascade = CascadeType.REMOVE)
 //    private List<Pet> pets;
 
