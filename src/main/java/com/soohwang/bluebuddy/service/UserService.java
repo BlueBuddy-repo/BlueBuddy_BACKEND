@@ -79,7 +79,11 @@ public class UserService {
         if (!passwordEncoder.matches(updateUserDto.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("비밀번호가 틀렸습니다.");
         }
+
         user.setName(updateUserDto.getName());
-        user.setPassword(passwordEncoder.encode(updateUserDto.getNewPassword()));
+
+        if (updateUserDto.getNewPassword() != null && !updateUserDto.getNewPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(updateUserDto.getNewPassword()));
+        }
     }
 }
