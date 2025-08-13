@@ -17,4 +17,6 @@ public interface UserCreatureRepository extends JpaRepository<UserCreature, Long
 
     Optional<UserCreature> findByUserAndSeaCreature(User user, SeaCreature seaCreature);
 
-}
+    Optional<UserCreature> findByUser_UserIdAndSelectedTrue(Long userId);
+
+    List<UserCreature> findAllByUser_UserIdOrderBySelectedDesc(Long userId);}

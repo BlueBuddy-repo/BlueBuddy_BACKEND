@@ -7,4 +7,5 @@ import lombok.Getter;
 public class ChangePetDto {
     private Long seaCreatureId;
     private String petName;
+    private Boolean selected;
 }

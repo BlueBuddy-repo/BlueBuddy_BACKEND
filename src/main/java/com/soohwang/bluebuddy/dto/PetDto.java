@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class PetDto {
-    private String PetName;
-    private String PetImage;
+    private String petName;
+    private String petImage;
     private Long creatureId;
 }

@@ -2,6 +2,7 @@ package com.soohwang.bluebuddy.controller;
 
 import com.soohwang.bluebuddy.dto.CreatureDetailDto;
 import com.soohwang.bluebuddy.dto.CreatureThumbnailDto;
+import com.soohwang.bluebuddy.dto.PetDto;
 import com.soohwang.bluebuddy.entity.User;
 import com.soohwang.bluebuddy.exception.ApiResponse;
 import com.soohwang.bluebuddy.service.UserCreatureService;
@@ -72,6 +73,46 @@ public class UserCreatureController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
+    }
+
+    // 펫 조회 (메인페이지, 펫 정보 수정)
+    @GetMapping("/getMyPet")
+    public ResponseEntity<ApiResponse> getMyPet(@AuthenticationPrincipal User user) {
+        try {
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new ApiResponse(false, "인증되지 않은 사용자입니다.", null));
+            }
+            PetDto result = userCreatureService.getMyPet(user);
+            return ResponseEntity.ok(new ApiResponse(true, "펫 조회 성공", result));
+        } catch (IllegalStateException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(false, ex.getMessage(), null));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+
+    }
+
+    // 펫 정보 수정
+    @GetMapping("/getCreatureList")
+    public ResponseEntity<ApiResponse> getSeaCreatureList(@AuthenticationPrincipal User user) {
+        try {
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new ApiResponse(false, "인증되지 않은 사용자입니다.", null));
+            }
+            List<PetDto> result = userCreatureService.getSeaCreatureList(user);
+            return ResponseEntity.ok(new ApiResponse(true, "생물 리스트 조회 성공", result));
+        } catch (IllegalStateException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(false, ex.getMessage(), null));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+
     }
 
 }
