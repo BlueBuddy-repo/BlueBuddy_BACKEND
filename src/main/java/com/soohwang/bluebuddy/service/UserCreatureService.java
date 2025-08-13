@@ -2,6 +2,7 @@ package com.soohwang.bluebuddy.service;
 
 import com.soohwang.bluebuddy.dto.CreatureDetailDto;
 import com.soohwang.bluebuddy.dto.CreatureThumbnailDto;
+import com.soohwang.bluebuddy.dto.PetDto;
 import com.soohwang.bluebuddy.entity.SeaCreature;
 import com.soohwang.bluebuddy.entity.User;
 import com.soohwang.bluebuddy.entity.UserCreature;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -108,4 +110,50 @@ public class UserCreatureService {
 
         return weightedCreatures.get(index);
         }
+
+    public PetDto getMyPet(User user) {
+        UserCreature pet = userCreatureRepository.findByUser_UserIdAndSelectedTrue(user.getUserId())
+                .orElseThrow(() -> new IllegalStateException("펫을 찾지 못함"));
+        SeaCreature seaCreature = seaCreatureRepository.getSeaCreatureByCreatureId(pet.getSeaCreature().getCreatureId())
+                .orElseThrow(() -> new IllegalStateException("해양생물을 찾지 못함"));
+
+        return PetDto.builder()
+                .userCreatureId(pet.getUserCreatureId())
+                .petName(pet.getPetName())
+                .creatureId(pet.getUserCreatureId())
+                .petImage(seaCreature.getImageUrl())
+                .build();
+    }
+
+    public List<PetDto> getSeaCreatureList(User user) {
+        List<UserCreature> petList = userCreatureRepository.findAllByUser_UserIdOrderBySelectedDesc(user.getUserId());
+
+        return petList.stream()
+                .map(pet -> {
+                    SeaCreature seaCreature = seaCreatureRepository.getSeaCreatureByCreatureId(
+                            pet.getSeaCreature().getCreatureId()
+                    ).orElseThrow(() -> new IllegalStateException("해양생물을 찾지 못함"));
+
+                    return PetDto.builder()
+                            .userCreatureId(pet.getUserCreatureId())
+                            .petName(pet.getPetName())
+                            .creatureId(pet.getUserCreatureId())
+                            .petImage(seaCreature.getImageUrl())
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
+    public void changeMyPet(User user, PetDto petDto) {
+        UserCreature prePet = userCreatureRepository.findByUser_UserIdAndSelectedTrue(user.getUserId())
+                .orElseThrow(() -> new IllegalStateException("펫을 찾지 못함"));
+        prePet.setSelected(false);
+        userCreatureRepository.save(prePet);
+
+        // 바꾸려는 생물의 userCreatureId
+        UserCreature newPet = userCreatureRepository.findByUser_userIdAndSeaCreature_CreatureId(user.getUserId(), petDto.getCreatureId());
+        newPet.setPetName(petDto.getPetName());
+        newPet.setSelected(true);
+        userCreatureRepository.save(newPet);
+    }
 }
