@@ -7,12 +7,12 @@ import lombok.*;
 
 @Entity
 @Getter @Setter
-@Table(name = "user_creature")
+@Builder
+@AllArgsConstructor
 public class UserCreature {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_creature_id")
     private Long userCreatureId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,11 +32,6 @@ public class UserCreature {
     private boolean selected;
 
     public UserCreature() {
-    }
-
-    public UserCreature(User user, SeaCreature seaCreature) {
-        this.user = user;
-        this.seaCreature = seaCreature;
     }
 }
 

@@ -3,12 +3,10 @@ package com.soohwang.bluebuddy.service;
 import com.soohwang.bluebuddy.dto.LoginDto;
 import com.soohwang.bluebuddy.dto.SignupDto;
 import com.soohwang.bluebuddy.dto.UpdateUserDto;
-import com.soohwang.bluebuddy.entity.Pet;
 import com.soohwang.bluebuddy.entity.SeaCreature;
 import com.soohwang.bluebuddy.entity.User;
 import com.soohwang.bluebuddy.entity.UserCreature;
 import com.soohwang.bluebuddy.jwt.JwtUtil;
-import com.soohwang.bluebuddy.repository.PetRepository;
 import com.soohwang.bluebuddy.repository.SeaCreatureRepository;
 import com.soohwang.bluebuddy.repository.UserCreatureRepository;
 import com.soohwang.bluebuddy.repository.UserRepository;
@@ -19,15 +17,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final SeaCreatureRepository seaCreatureRepository;
-    private final PetRepository petRepository;
     private final UserCreatureRepository userCreatureRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final UserCreatureService userCreatureService;
+    private final SeaCreatureRepository seaCreatureRepository;
 
     @Transactional
     public void signup(SignupDto signupDto) {
@@ -45,18 +45,19 @@ public class UserService {
         userRepository.save(user);
 
         // 펫 획득
-        SeaCreature seaCreature = seaCreatureRepository.findRandomOne(); // 나중에 희귀 정도가 낮은 것만 배정하도록 추가
+        List<SeaCreature> allSeaCreature = seaCreatureRepository.findAll();
+        SeaCreature seaCreature = userCreatureService.getRandomCreature(allSeaCreature); // 랜덤 펫
         if (seaCreature == null) {
             throw new IllegalStateException("해양 생물 배정 실패");
         }
 
-        Pet pet = Pet.builder()
-                .petName("블루")
-                .seaCreature(seaCreature)
+        UserCreature userCreature = UserCreature.builder()
                 .user(user)
+                .seaCreature(seaCreature)
+                .petName("블루") // 기본 이름
+                .selected(true)
                 .build();
-        petRepository.save(pet);
-        userCreatureRepository.save(new UserCreature(user, seaCreature)); // 획득한 펫을 생물도감에 등록
+        userCreatureRepository.save(userCreature); // 획득한 펫을 생물도감에 등록
 
     }
 
