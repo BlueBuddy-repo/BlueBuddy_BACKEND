@@ -34,9 +34,9 @@ public class User implements UserDetails {
     @NotNull
     private Long waveIndex = 0L;
 
-    @OneToOne(mappedBy = "user")
-    @JsonIgnore
-    private Pet pet;
+    //@OneToOne(mappedBy = "user")
+    //@JsonIgnore
+    //private Pet pet;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
