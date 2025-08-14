@@ -34,6 +34,7 @@ public class UserCreatureService {
             UserCreature uc = new UserCreature();
             uc.setUser(user);
             uc.setSeaCreature(creature);
+            uc.setPetName("블루");
             userCreatureRepository.save(uc);
         }
     }
