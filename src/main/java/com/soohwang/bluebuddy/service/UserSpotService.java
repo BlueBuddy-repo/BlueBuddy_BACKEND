@@ -61,7 +61,7 @@ public class UserSpotService {
                 currentUserSpot.setIsCompleted(true);
                 // 5-2. 새로운 생물 지급
                 // spot의 장소명을 사용하여 해당하는 생물 중 하나를 랜덤 배정? 논의 필요
-                missionService.completeMission(user.getEmail(), currentUserSpot.getSpot().getSpotName());
+                missionService.completeMission(user.getEmail(), Long.valueOf(currentUserSpot.getSpot().getSpotName()));
 
                 // 6. 다음 장소 할당 (spotId + 1)
                 Long nextSpotId = currentUserSpot.getSpot().getSpotId() + 1;

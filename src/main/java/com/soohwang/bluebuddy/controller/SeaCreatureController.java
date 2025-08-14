@@ -17,7 +17,7 @@ public class SeaCreatureController {
     private final SeaCreatureService seaCreatureService;
 
     @GetMapping("/habitat")
-    public List<CreatureByHabitatDto> getByHabitat(@RequestParam String habitat) {
-        return seaCreatureService.getCreaturesByHabitat(habitat);
+    public List<CreatureByHabitatDto> getBySPotId(Long spotId) {
+        return seaCreatureService.getCreaturesByHabitat(spotId);
     }
 }

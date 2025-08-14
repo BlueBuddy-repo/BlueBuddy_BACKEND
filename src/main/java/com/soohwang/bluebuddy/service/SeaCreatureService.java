@@ -12,8 +12,8 @@ import java.util.List;
 public class SeaCreatureService {
     private final SeaCreatureRepository seaCreatureRepository;
 
-    public List<CreatureByHabitatDto> getCreaturesByHabitat(String habitat) {
-        return seaCreatureRepository.findCreatureDtoByHabitat(habitat);
+    public List<CreatureByHabitatDto> getCreaturesByHabitat(Long spotId) {
+        return seaCreatureRepository.findCreatureDtoBySpotId(spotId);
     }
 
 }
