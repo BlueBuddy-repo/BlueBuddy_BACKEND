@@ -44,6 +44,10 @@ public class SeaCreature {
     @OneToMany(mappedBy = "seaCreature", cascade = CascadeType.REMOVE)
     private List<UserCreature> userCreatures;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "spot_id")
+    private Spot spot;
+
     public SeaCreature() {}
 }
 

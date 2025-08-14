@@ -15,8 +15,8 @@ public class MissionService {
     private final SeaCreatureRepository seaCreatureRepository;
     private final UserCreatureService userCreatureService;
 
-    public NewCreatureDto completeMission(String email, String habitat) {
-        List<SeaCreature> allCreatures = seaCreatureRepository.findByHabitat(habitat);
+    public NewCreatureDto completeMission(String email, Long spotId) {
+        List<SeaCreature> allCreatures = seaCreatureRepository.findBySpot_SpotId(spotId);
         if (allCreatures.isEmpty())  {
             throw new RuntimeException("해당 서식지에 생물이 없습니다.");
         }
