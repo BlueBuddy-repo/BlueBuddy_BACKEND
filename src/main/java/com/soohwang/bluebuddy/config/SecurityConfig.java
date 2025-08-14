@@ -26,7 +26,7 @@ public class SecurityConfig {
     // 인증인가 없이 접근 가능한 엔드포인트 리스트
     private static final String[] AUTH_WHITELIST = {
             "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/v3/api-docs.yaml", "/v3/api-docs", "/webjars/**",
-            "/auth/**", "/mission/complete" ,"/api/**", "/img/**", "/**"
+            "/auth/**", "/api/**", "/img/**"
     };
 
     @Bean
@@ -60,7 +60,7 @@ public class SecurityConfig {
 
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://bluebuddy.netlify.app/"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
