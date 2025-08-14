@@ -21,7 +21,7 @@ public class SpeciesScheduler {
     private final SpeciesRepository speciesRepository;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Scheduled(cron = "0 0 0 1 * *")
+    //@Scheduled(cron = "0 0 0 1 * *")
     public void updateSpecies() {
         List<Species> speciesList = new ArrayList<>();
         int totalCells = 36 * 72;

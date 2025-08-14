@@ -19,7 +19,8 @@ public class SeatempCrawler {
         String dateStr = date.toString();
 
         String downloadUrl = "https://pae-paha.pacioos.hawaii.edu/erddap/griddap/dhw_5km.csv?CRW_SST[("
-                + dateStr + ")][1000:100:2600][1000:100:2600]";
+                + dateStr + ")][(-89.975):100:(89.975)][(-179.975):100:(179.975)]";
+
         String filePath = "src/main/resources/data/sea_temp_" + dateStr + ".csv";
 
         try (BufferedInputStream in = new BufferedInputStream(new URL(downloadUrl).openStream());
