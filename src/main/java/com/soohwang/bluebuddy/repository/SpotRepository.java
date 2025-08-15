@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface SpotRepository extends JpaRepository<Spot, Long> {
     @Query("SELECT s.missionNum FROM Spot s WHERE s.spotId = :spotId")
     Integer getMissionNumBySpotId(@Param("spotId") Long spotId);
+
+    Spot getBySpotId(Long spotId);
 }

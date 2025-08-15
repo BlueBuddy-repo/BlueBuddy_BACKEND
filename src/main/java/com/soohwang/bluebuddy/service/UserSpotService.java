@@ -1,6 +1,9 @@
 package com.soohwang.bluebuddy.service;
 
+import com.soohwang.bluebuddy.dto.PetDto;
+import com.soohwang.bluebuddy.dto.RandomCreatureDto;
 import com.soohwang.bluebuddy.dto.SpotDataDto;
+import com.soohwang.bluebuddy.entity.SeaCreature;
 import com.soohwang.bluebuddy.entity.Spot;
 import com.soohwang.bluebuddy.entity.User;
 import com.soohwang.bluebuddy.entity.UserSpot;
@@ -16,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -64,8 +68,9 @@ public class UserSpotService {
                 // 5-1. 스팟 완료 처리
                 currentUserSpot.setIsCompleted(true);
                 // 5-2. 새로운 생물 지급
-                // spot의 장소명을 사용하여 해당하는 생물 중 하나를 랜덤 배정? 논의 필요
-                missionService.completeMission(user.getEmail(), currentUserSpot.getSpot().getSpotId());
+                SeaCreature selected = missionService.completeMission(user.getEmail(), currentUserSpot.getSpot().getSpotId());
+                currentUserSpot.setSeaCreature(selected);
+                currentUserSpot.setIsOpened(false);
 
                 // 6. 다음 장소 할당 (spotId + 1)
                 Long nextSpotId = currentUserSpot.getSpot().getSpotId() + 1;
@@ -76,7 +81,9 @@ public class UserSpotService {
                         .user(user)
                         .spot(nextSpot)
                         .missionCount(0)
-                        .isCompleted(false)
+                        .isCompleted(false) // 미션 진행중
+                        .isOpened(false) // 사용자 클릭 x
+                        .seaCreature(null) // 배정된 생물 없음
                         .build();
                 userSpotRepository.save(newUserSpot);
             }
@@ -123,5 +130,31 @@ public class UserSpotService {
             spotDataDtos.add(dto);
         }
         return spotDataDtos;
+    }
+
+    @Transactional
+    public RandomCreatureDto openCreature(User user, Long spotId) {
+        // spotId로 Spot 조회
+        Spot spot = spotRepository.getBySpotId(spotId);
+
+        // User와 Spot으로 UserSpot 조회
+        UserSpot userSpot = userSpotRepository.findByUserAndSpot(user, spot)
+                .orElseThrow(() -> new IllegalArgumentException("해당 스팟을 찾을 수 없습니다."));
+
+        // 스팟 오픈 상태로 변경
+        userSpot.setIsOpened(true);
+        userSpotRepository.save(userSpot);
+
+        // UserSpot에 저장된 SeaCreature 가져오기
+        SeaCreature seaCreature = userSpot.getSeaCreature();
+        if (seaCreature == null) {
+            throw new IllegalStateException("이 스팟에는 아직 해양 생물이 할당되지 않았습니다.");
+        }
+
+        // RandomCreatureDto로 변환해서 반환
+        return RandomCreatureDto.builder()
+                .name(seaCreature.getNameKr())
+                .imageUrl(seaCreature.getImageUrl())
+                .build();
     }
 }

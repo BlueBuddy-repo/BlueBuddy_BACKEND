@@ -1,5 +1,6 @@
 package com.soohwang.bluebuddy.controller;
 
+import com.soohwang.bluebuddy.dto.RandomCreatureDto;
 import com.soohwang.bluebuddy.dto.SpotDataDto;
 import com.soohwang.bluebuddy.entity.User;
 import com.soohwang.bluebuddy.exception.ApiResponse;
@@ -63,14 +64,32 @@ public class UserSpotController {
     }
 
     @GetMapping("/spotList")
-    public ResponseEntity<?> getSpotList(@AuthenticationPrincipal User user) {
+    public ResponseEntity<ApiResponse> getSpotList(@AuthenticationPrincipal User user) {
         try {
             List<SpotDataDto> spotData = userSpotService.getSpotDataDto(user);
-            return ResponseEntity.ok(spotData);
+            return ResponseEntity.ok(new ApiResponse(true, "스팟 데이터 조회 성공", spotData));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("스팟 데이터 조회 중 오류가 발생했습니다: " + e.getMessage());
+                    .body(new ApiResponse(false, "스팟 데이터 조회 중 오류가 발생했습니다.", null));
+        }
+    }
+
+    @PostMapping("/open/{spotId}")
+    public ResponseEntity<ApiResponse> openCreature(@AuthenticationPrincipal User user,
+                                                    @PathVariable Long spotId) {
+        try {
+            RandomCreatureDto dto = userSpotService.openCreature(user, spotId);
+            return ResponseEntity.ok(new ApiResponse(true, "해양 생물 오픈 성공", dto));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(false, e.getMessage(), null));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new ApiResponse(false, e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
         }
     }
 }
