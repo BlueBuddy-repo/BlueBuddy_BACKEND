@@ -3,13 +3,9 @@ package com.soohwang.bluebuddy.service;
 import com.soohwang.bluebuddy.dto.LoginDto;
 import com.soohwang.bluebuddy.dto.SignupDto;
 import com.soohwang.bluebuddy.dto.UpdateUserDto;
-import com.soohwang.bluebuddy.entity.SeaCreature;
-import com.soohwang.bluebuddy.entity.User;
-import com.soohwang.bluebuddy.entity.UserCreature;
+import com.soohwang.bluebuddy.entity.*;
 import com.soohwang.bluebuddy.jwt.JwtUtil;
-import com.soohwang.bluebuddy.repository.SeaCreatureRepository;
-import com.soohwang.bluebuddy.repository.UserCreatureRepository;
-import com.soohwang.bluebuddy.repository.UserRepository;
+import com.soohwang.bluebuddy.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -28,6 +24,8 @@ public class UserService {
     private final JwtUtil jwtUtil;
     private final UserCreatureService userCreatureService;
     private final SeaCreatureRepository seaCreatureRepository;
+    private final UserSpotRepository userSpotRepository;
+    private final SpotRepository spotRepository;
 
     @Transactional
     public void signup(SignupDto signupDto) {
@@ -58,6 +56,18 @@ public class UserService {
                 .selected(true)
                 .build();
         userCreatureRepository.save(userCreature); // 획득한 펫을 생물도감에 등록
+
+        // 첫번째 스팟 오픈
+        Spot firstSpot = spotRepository.getBySpotId(1L);
+        UserSpot newUserSpot = UserSpot.builder()
+                .user(user)
+                .spot(firstSpot)
+                .missionCount(0)
+                .isCompleted(false) // 미션 진행중
+                .isOpened(false) // 사용자 클릭 x
+                .seaCreature(null) // 배정된 생물 없음
+                .build();
+        userSpotRepository.save(newUserSpot);
 
     }
 
