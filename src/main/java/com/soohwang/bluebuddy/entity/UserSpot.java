@@ -32,6 +32,13 @@ public class UserSpot {
     @NotNull
     private Boolean isCompleted;
 
+    @NotNull
+    private Boolean isOpened;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sea_creature_id")
+    @JsonBackReference
+    private SeaCreature seaCreature;
 
     public void increaseCompletedMission() {
         this.missionCount++;

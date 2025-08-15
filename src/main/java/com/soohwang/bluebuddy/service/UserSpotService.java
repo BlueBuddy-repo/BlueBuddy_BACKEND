@@ -113,9 +113,11 @@ public class UserSpotService {
                 // 스팟을 연 적이 없음
                 dto.setIsCompleted(null);
                 dto.setMissionCount(0);
+                dto.setIsOpened(null);
             } else {
                 dto.setIsCompleted(userSpot.getIsCompleted());
                 dto.setMissionCount(userSpot.getMissionCount());
+                dto.setIsOpened(userSpot.getIsOpened());
             }
 
             spotDataDtos.add(dto);
