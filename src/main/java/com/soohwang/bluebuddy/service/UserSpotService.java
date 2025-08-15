@@ -1,5 +1,6 @@
 package com.soohwang.bluebuddy.service;
 
+import com.soohwang.bluebuddy.dto.SpotDataDto;
 import com.soohwang.bluebuddy.entity.Spot;
 import com.soohwang.bluebuddy.entity.User;
 import com.soohwang.bluebuddy.entity.UserSpot;
@@ -15,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
@@ -91,5 +94,32 @@ public class UserSpotService {
             throw new NoSuchElementException("해당 spotId의 미션 개수를 찾을 수 없습니다.");
         }
         return missionNum;
+    }
+
+    public List<SpotDataDto> getSpotDataDto(User user) {
+        List<Spot> allSpots = spotRepository.findAll();
+        List<SpotDataDto> spotDataDtos = new ArrayList<>();
+
+        for (Spot spot : allSpots) {
+            UserSpot userSpot = userSpotRepository.findByUserAndSpot(user, spot).orElse(null);
+
+            SpotDataDto dto = new SpotDataDto();
+            dto.setSpotId(spot.getSpotId().toString());
+            dto.setSpotName(spot.getSpotName());
+            dto.setLatitude(spot.getLatitude());
+            dto.setLongitude(spot.getLongitude());
+
+            if (userSpot == null) {
+                // 스팟을 연 적이 없음
+                dto.setIsCompleted(null);
+                dto.setMissionCount(0);
+            } else {
+                dto.setIsCompleted(userSpot.getIsCompleted());
+                dto.setMissionCount(userSpot.getMissionCount());
+            }
+
+            spotDataDtos.add(dto);
+        }
+        return spotDataDtos;
     }
 }

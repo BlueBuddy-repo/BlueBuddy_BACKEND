@@ -1,5 +1,6 @@
 package com.soohwang.bluebuddy.controller;
 
+import com.soohwang.bluebuddy.dto.SpotDataDto;
 import com.soohwang.bluebuddy.entity.User;
 import com.soohwang.bluebuddy.exception.ApiResponse;
 import com.soohwang.bluebuddy.service.UserSpotService;
@@ -12,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -57,6 +59,18 @@ public class UserSpotController {
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, "서버 오류가 발생했습니다.", null));
+        }
+    }
+
+    @GetMapping("/spotList")
+    public ResponseEntity<?> getSpotList(@AuthenticationPrincipal User user) {
+        try {
+            List<SpotDataDto> spotData = userSpotService.getSpotDataDto(user);
+            return ResponseEntity.ok(spotData);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("스팟 데이터 조회 중 오류가 발생했습니다: " + e.getMessage());
         }
     }
 }
