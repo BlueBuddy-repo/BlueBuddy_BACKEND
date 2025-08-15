@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 
@@ -82,5 +83,13 @@ public class UserSpotService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public int getMissionNum(Long spotId) {
+        Integer missionNum = spotRepository.getMissionNumBySpotId(spotId);
+        if (missionNum == null) {
+            throw new NoSuchElementException("해당 spotId의 미션 개수를 찾을 수 없습니다.");
+        }
+        return missionNum;
     }
 }
