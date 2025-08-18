@@ -138,21 +138,31 @@ public class UserCreatureService {
                     return PetDto.builder()
                             .userCreatureId(pet.getUserCreatureId())
                             .petName(pet.getPetName())
-                            .creatureId(pet.getUserCreatureId())
+                            .creatureId(seaCreature.getCreatureId())
                             .petImage(seaCreature.getImageUrl())
                             .build();
                 })
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void changeMyPet(User user, PetDto petDto) {
-        UserCreature prePet = userCreatureRepository.findByUser_UserIdAndSelectedTrue(user.getUserId())
-                .orElseThrow(() -> new IllegalStateException("펫을 찾지 못함"));
-        prePet.setSelected(false);
-        userCreatureRepository.save(prePet);
+        UserCreature currentPet = userCreatureRepository.findByUser_UserIdAndSelectedTrue(user.getUserId())
+                .orElseThrow(() -> new IllegalStateException("현재 선택된 펫을 찾지 못함"));
 
-        // 바꾸려는 생물의 userCreatureId
-        UserCreature newPet = userCreatureRepository.findByUser_userIdAndSeaCreature_CreatureId(user.getUserId(), petDto.getCreatureId());
+        if (currentPet.getSeaCreature().getCreatureId().equals(petDto.getCreatureId())) {
+            // 이름만 바꾸는 경우
+            currentPet.setPetName(petDto.getPetName());
+            userCreatureRepository.save(currentPet);
+            return;
+        }
+
+        // 생물 바꾸는 경우
+        currentPet.setSelected(false);
+        userCreatureRepository.save(currentPet);
+
+        UserCreature newPet = userCreatureRepository.findByUser_userIdAndSeaCreature_CreatureId(user.getUserId(), petDto.getCreatureId())
+                .orElseThrow(() -> new IllegalStateException("새로 지정할 펫을 찾지 못함"));
         newPet.setPetName(petDto.getPetName());
         newPet.setSelected(true);
         userCreatureRepository.save(newPet);
